@@ -1,6 +1,12 @@
 import express, { json } from 'express';
 import { Database } from './db/Database.js';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
+
+dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -17,13 +23,15 @@ app.get('/', (req, res) => {
 
 // Notes CRUD endpoints
 app.post('/api/notes', async (req, res) => {
-  try {
-    const { title, content } = req.body;
-    const note = await db.createNote(title, content);
-    res.status(201).json(note);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+  const note = await prisma.notes.create({
+    data: {
+      title: req.body.title,
+      content: req.body.content
+    }
+  }).catch((err) => {
+    return res.status(500).json({ error: err.message });
+  })
+  res.json(note);
 });
 
 app.get('/api/notes', async (req, res) => {

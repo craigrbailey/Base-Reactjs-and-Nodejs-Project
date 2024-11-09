@@ -37,32 +37,6 @@ export class Database {
         });
     }
 
-    // Create a new note
-    createNote(title, content) {
-        return new Promise((resolve, reject) => {
-            const currentTime = new Date().toISOString();
-            const sql = `
-                INSERT INTO notes (
-                    title, 
-                    content, 
-                    created_at, 
-                    updated_at
-                ) VALUES (?, ?, ?, ?)`;
-            this.db.run(sql, [title, content, currentTime, currentTime], function(err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve({ 
-                        id: this.lastID, 
-                        title, 
-                        content, 
-                        created_at: currentTime,
-                        updated_at: currentTime 
-                    });
-                }
-            });
-        });
-    }
 
     // Read all notes
     getAllNotes() {
