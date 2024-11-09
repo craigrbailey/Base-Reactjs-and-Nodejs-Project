@@ -1,0 +1,15 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./notes.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Notes {
+  id        String      @id @default(uuid())
+  title     String      @unique   
+  content   String
+  created_at DateTime    @default(now())
+}
