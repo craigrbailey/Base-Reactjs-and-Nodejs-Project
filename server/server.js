@@ -44,7 +44,7 @@ app.get('/api/notes', async (req, res) => {
 app.get('/api/notes/:id', async (req, res) => {
     const note = await prisma.notes.findUniqueOrThrow({
       where: {
-        id: parseInt(req.params.id)
+        id:  req.params.id
       }
     })
 
@@ -58,7 +58,7 @@ app.put('/api/notes/:id', async (req, res) => {
     const { title, content } = req.body;
     const result = await prisma.notes.update({
       where: {
-        id: parseInt(req.params.id)
+        id:  req.params.id
       },
       data: {
         title,
@@ -77,12 +77,12 @@ app.put('/api/notes/:id', async (req, res) => {
 app.delete('/api/notes/:id', async (req, res) => {
     const result = await prisma.notes.delete({
       where: {
-        id: parseInt(req.params.id)
+        id: req.params.id
       }
     }).catch((err) => {
       return res.status(500).json({ error: err.message });
     })
-    
+
     res.json(result);
 });
 
