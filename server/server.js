@@ -35,49 +35,55 @@ app.post('/api/notes', async (req, res) => {
 });
 
 app.get('/api/notes', async (req, res) => {
-  try {
-    const notes = await db.getAllNotes();
+    const notes = await prisma.notes.findMany().catch((err) => {
+      return res.status(500).json({ error: err.message });
+    })
     res.json(notes);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 app.get('/api/notes/:id', async (req, res) => {
-  try {
-    const note = await db.getNoteById(req.params.id);
+    const note = await prisma.notes.findUniqueOrThrow({
+      where: {
+        id: parseInt(req.params.id)
+      }
+    })
+
     if (!note) {
       return res.status(404).json({ error: 'Note not found' });
     }
     res.json(note);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 app.put('/api/notes/:id', async (req, res) => {
-  try {
     const { title, content } = req.body;
-    const result = await db.updateNote(req.params.id, title, content);
-    if (result.changes === 0) {
+    const result = await prisma.notes.update({
+      where: {
+        id: parseInt(req.params.id)
+      },
+      data: {
+        title,
+        content
+      }
+    }).catch((err) => {
+      return res.status(500).json({ error: err.message });
+    })
+
+    if (!result) {
       return res.status(404).json({ error: 'Note not found' });
     }
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 app.delete('/api/notes/:id', async (req, res) => {
-  try {
-    const result = await db.deleteNote(req.params.id);
-    if (result.changes === 0) {
-      return res.status(404).json({ error: 'Note not found' });
-    }
+    const result = await prisma.notes.delete({
+      where: {
+        id: parseInt(req.params.id)
+      }
+    }).catch((err) => {
+      return res.status(500).json({ error: err.message });
+    })
+    
     res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
 });
 
 // Start server
