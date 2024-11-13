@@ -35,6 +35,7 @@ A modern, responsive web application for creating and managing notes with a clea
 - Node.js
 - Express.js
 - SQLite3 Database
+- Prisma (ORM)
 
 ## Usage
 
@@ -70,6 +71,7 @@ A modern, responsive web application for creating and managing notes with a clea
    # Install backend dependencies
    cd ../server
    npm install
+   npx prisma generate
    ```
 3. Start the backend server:
    ```bash
@@ -82,6 +84,8 @@ A modern, responsive web application for creating and managing notes with a clea
    npm start
    ```
 5. Open `http://localhost:3000` in your browser
+6. After making a change to the db schema, run `npx prisma migrate dev --schema=./db/schema.prisma` to create a new migration to the database
+7. If a change was made, re-run `npx prisma generate` to generate the new changes.
 
 ## Contributing
 
